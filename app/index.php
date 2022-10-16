@@ -74,7 +74,7 @@ $i = 0;
             <div class="p-4 p-md-5 text-white rounded bg-dark">
                 <div class = "row">
                     <div class="col-12 col-md-6">
-                        <h3 class="display-4">ESFUERZATE, TU PRÓXIMA OPORTUNIDAD TE ESPERA</h3>
+                        <h3 class="display-4">ESFUÉRZATE, TU PRÓXIMA OPORTUNIDAD TE ESPERA</h3>
                         <p class="lead">Participa en la mayor web de jugadores de baloncesto del país, sube tus estadísticas para que   
                             ojeadores y entrenadores puedan contratarte para sus equipos.
                             Además ganarás premios y viajes de la organización.
