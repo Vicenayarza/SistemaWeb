@@ -3,11 +3,11 @@ session_start();
 $username = $_SESSION['username'];
 $db = mysqli_connect('172.17.0.2:3306', 'admin', 'test', 'database');
 $jornadaAct = $_SESSION['jornadaAct'];
-$numJ = $_POST['actIDJornada'];
-$liga = $_POST['actLiga'];
-$puntos = $_POST['actPuntos'];
-$encestados = $_POST['actEncestados'];
-$realizados = $_POST['actRealizados'];
+$numJ = htmlspecialchars($_POST['actIDJornada'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+$liga = htmlspecialchars($_POST['actLiga'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+$puntos = htmlspecialchars($_POST['actPuntos'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+$encestados = htmlspecialchars($_POST['actEncestados'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+$realizados = htmlspecialchars($_POST['actRealizados'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
 
 if ($jornadaAct == null) { //Si no existe partida actual --> Creando jornada nueva
     $query = "SELECT * FROM jornada WHERE nombreUsuario = '$username' AND num_jornada = '$numJ';";
@@ -23,8 +23,11 @@ if ($jornadaAct == null) { //Si no existe partida actual --> Creando jornada nue
         $_SESSION['jornadaAnt'] = $jornadaAct;
         header('location: ../modificar.php');
     } else {
-        $query = "INSERT INTO jornada VALUES ('$numJ', '$liga', '$puntos', '$encestados', '$realizados', '$username');"; //Añadimos jornada
-        mysqli_query($db,$query);
+        $query = "INSERT INTO jornada VALUES (?,?,?,?,?,?);"; //Añadimos jornada
+        $stmt = $db -> prepare($query);
+        $stmt -> bind_param("ssiiis", $numJ, $liga, $puntos, $encestados, $realizados, $username);
+        $stmt -> execute();
+        $stmt-> close();
         unset($_SESSION['errorJornadaExiste']);
         header('location: ../jornadasGuardadas.php');
     }
@@ -45,17 +48,33 @@ if ($jornadaAct == null) { //Si no existe partida actual --> Creando jornada nue
             $_SESSION['realizados'] = $realizados;
             $_SESSION['jornadaAnt'] = $jornadaAct;
             header('location: ../modificar.php');
-        } else { //Si se han hecho cambios --> actualizar datos partida
-            $query = "UPDATE jornada SET num_jornada = '$numJ', liga = '$liga', puntos='$puntos', encestados = '$encestados', realizados = '$realizados' WHERE nombreUsuario = '$username' AND num_jornada = '$jornadaAct';";
+            
+        } elseif ($jornadaAct == $numJ) { //Si se han hecho cambios --> actualizar datos partida
+            $query = "UPDATE jornada SET num_jornada = ?, liga =?, puntos=?, encestados = ?, realizados = ? WHERE nombreUsuario = ? AND num_jornada = ?;";
+            $stmt = $db -> prepare($query);
+            $stmt -> bind_param("ssiiiss", $numJ, $liga, $puntos, $encestados, $realizados, $username, $jornadaAct);
+            $stmt -> execute();
+            $stmt-> close();
             unset($_SESSION['errorJornadaExiste']);
-            mysqli_query($db,$query);
             header('location: ../jornadasGuardadas.php');
+        }else {
+            $_SESSION['errorJornadaExiste'] = true;
+            $_SESSION['numJ'] = $numJ;  //Enviamos de vuelta todos los datos ya introducidos previamente
+            $_SESSION['liga'] = $liga;
+            $_SESSION['puntos'] = $puntos;
+            $_SESSION['encestados'] = $encestados;
+            $_SESSION['realizados'] = $realizados;
+            $_SESSION['jornadaAnt'] = $jornadaAct;
+            header('location: ../modificar.php');
         }
-    } else { //Si la jornada no existe --> actualizar jornada con datos nuevos 
-        $query = "UPDATE jornada SET num_jornada = '$numJ', liga = '$liga', puntos='$puntos', encestados = '$encestados', realizados = '$realizados' WHERE nombreUsuario = '$username' AND num_jornada = '$jornadaAct';";
+    } else { //Si la jornada no existe --> actualizar jornada con datos nuevos (nuevo códido de partida)
+        $query = "UPDATE jornada SET num_jornada = ?, liga = ?, puntos=?, encestados = ?, realizados = ? WHERE nombreUsuario = ? AND num_jornada = ?;";
+         $stmt = $db -> prepare($query);
+        $stmt -> bind_param("ssiiiss", $numJ, $liga, $puntos, $encestados, $realizados, $username, $jornadaAct);
+        $stmt -> execute();
+        $stmt-> close();
         unset($_SESSION['errorJornadaExiste']);
-        mysqli_query($db,$query);
         header('location: ../jornadasGuardadas.php');
     }
-}
+ }
 ?>

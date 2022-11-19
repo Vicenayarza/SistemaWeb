@@ -1,25 +1,29 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    header('location: index.php');
+    header('location: ../index.php');
+} elseif ($_SESSION['ult_actividad'] < time() - $_SESSION['expira']) {
+    session_unset();
+    session_destroy();
 } else {
+    $_SESSION['ult_actividad'] = time(); //SETEAMOS NUEVO TIEMPO DE ACTIVIDAD
     $db = mysqli_connect('172.17.0.2:3306', 'admin', 'test', 'database');
     $user = $_SESSION['username'];
     $user_check_query = "SELECT * FROM usuario WHERE nombreUsuario = '$user';";
     $res = mysqli_query($db, $user_check_query);
     $usuario = mysqli_fetch_assoc($res);
-
+    
     //Obtener variables a modificar
     if (isset($_SESSION['jornadaAnt'])) {
         $jornada = $_SESSION['jornadaAnt'];
     } else {
-        $jornada = $_POST['jornada'];
+        $jornada = htmlspecialchars($_POST['jornada']);
     }
     
-    $liga = $_POST['liga'];
-    $puntos = $_POST['puntos'];
-    $encestados = $_POST['encestados'];
-    $realizados = $_POST['realizados'];
+    $liga =  htmlspecialchars($_POST['liga']);
+    $puntos =  htmlspecialchars($_POST['puntos']);
+    $encestados =  htmlspecialchars($_POST['encestados']);
+    $realizados =  htmlspecialchars($_POST['realizados']);
 
     $query = "SELECT SUM(puntos) FROM jornada WHERE nombreUsuario = '$user';";
     $res2 = mysqli_query($db,$query);

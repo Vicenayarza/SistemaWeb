@@ -48,9 +48,17 @@ session_start();
                     <label for="usern" class="form-label">Nombre de usuario</label>
                     <input name= "username" type="text" class="form-control" id="controlUsername" placeholder = "ej: JuanHer">
                 </div>
-                <div id = "c8" class="mb-3">
+                 <div id = "c8" class="mb-3">
                     <label for="password" class="form-label">Contraseña</label>
                     <input name = "contra" type="password" class="form-control" id="controlPass">
+                </div>
+                <div id = "c9" class="mb-3">
+                    <label for="password" class="form-label">Repetir contraseña</label>
+                    <input name = "contra_repetir" type="password" class="form-control" id="controlPassRepeat">
+                </div>
+                <div id = "c10" class="mb-3">
+                    <label for="bank_account" class="form-label">Cuenta bancaria</label>
+                    <input name = "cuenta_bancaria" type="text" class="form-control" id="controlBankAccount">
                 </div>
                 <?php if (isset($_SESSION['errorUsername'])) : ?>
                     <p class="text-danger" id="errUsername">El nombre de usuario ya está elegido</p>
@@ -58,6 +66,7 @@ session_start();
                 <?php if (isset($_SESSION['errorMail'])) : ?>
                     <p class="text-danger" id="errMail">El correo electrónico ya está registrado</p>
                 <?php endif; ?>
+                <input type="hidden" name="CSRFToken" value="FQMcSH9G3oSuekSUS5q7fo3ZAciGPJGvA2SAHhrmeTNFMGKG3Raop9WAjKHKc4MKwLXx7dY2wiUbNF5eetFf4">
                 <button type="button" class= "btn btn-primary" onclick="comprobardatos()"> Enviar</button>
             </form>
         </div>
