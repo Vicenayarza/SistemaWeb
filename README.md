@@ -11,17 +11,17 @@ Situar la terminal dentro de la carpeta SistemaWeb.
 
 Descargar docker:
 ```bash
-$ apt-get install docker
+$ sudo apt-get install docker
 ```
 
 Crear la imagen web:
 ```bash
-$ docker build -t="web" .
+$ sudo docker build -t="web" .
 ```
 
 Iniciar los contenedores:
 ```bash
-$ docker-compose up -d
+$ sudo docker-compose up -d
 ```
 
 Mediante un navegador, acceder a http://localhost:8890/ . 
@@ -34,5 +34,5 @@ Acceder a http://localhost:81/ .
 
 En caso de querer detener el proyecto, en otra terminal:
 ```bash
-$ docker-compose down
+$ sudo docker-compose down
 ```
